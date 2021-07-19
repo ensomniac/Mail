@@ -29,17 +29,7 @@ class EnsomniacMailApi:
         self.htmlTitle = None
         self.redirect_url = None
 
-        self.local_storage_path_server = "/var/www/vhosts/oapi.co/mail/local_storage/"
-        self.local_storage_path_katie = "/Users/KatieHilder/Google Drive/katies_python_projects/mail/local_storage/"
-        self.local_storage_path_ry = "/Users/rmartin/Google Drive/katies_python_projects/mail/local_storage/"
-
-        if os.path.exists(self.local_storage_path_katie):
-            self.local_storage_path = self.local_storage_path_katie
-        elif os.path.exists(self.local_storage_path_ry):
-            self.local_storage_path = self.local_storage_path_ry
-        else:
-            self.local_storage_path = self.local_storage_path_server
-
+        self.local_storage_path = "/var/www/vhosts/oapi.co/mail/local_storage/"
         self.flow_path = self.local_storage_path + "flow/"
 
         if module_data:

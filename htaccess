@@ -1,0 +1,20 @@
+# Use PHP5 Single php.ini as default
+AddHandler application/x-httpd-php5s .php
+
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+Header set Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+
+# For security reasons, Option followsymlinks cannot be overridden.
+#Options +FollowSymLinks
+Options +SymLinksIfOwnerMatch
+Options All -Indexes
+RewriteEngine on
+RewriteBase /
+
+RewriteRule ^([^/\.]+)/?$ /cgi-bin/Api.py?f=operator&service_name=$1&%{QUERY_STRING} [NC,L]
+
+DirectoryIndex /cgi-bin/Api.py
+
+# AddHandler cgi-script .cgi .pl
+# Options +ExecCGI
