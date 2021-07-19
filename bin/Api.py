@@ -1,4 +1,5 @@
 #!/usr/bin/python2
+# -*- coding: ascii -*-
 #
 # 2010 Ryan Martin
 
