@@ -1,11 +1,9 @@
 #!/usr/bin/python2
-
+#
+# 2010 Ryan Martin
 
 import os
 import datetime
-#from email.MIMEText import MIMEText
-#from email.MIMEMultipart import MIMEMultipart
-
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 

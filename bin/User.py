@@ -1,7 +1,6 @@
 #!/usr/bin/python2
 #
-# Author:  Ryan Martin ryan@ensomniac.com
-#
+# 2010 Ryan Martin
 
 import os
 import datetime
@@ -11,17 +10,7 @@ from dateutil import parser
 class User:
     def __init__(self, email=None):
 
-        self.local_storage_path_server = "/var/www/vhosts/oapi.co/mail/local_storage/"
-        self.local_storage_path_katie = "/Users/KatieHilder/Google Drive/katies_python_projects/mail/local_storage/"
-        self.local_storage_path_ry = "/Users/rmartin/Google Drive/katies_python_projects/mail/local_storage/"
-
-        if os.path.exists(self.local_storage_path_katie):
-            self.local_storage_path = self.local_storage_path_katie
-        elif os.path.exists(self.local_storage_path_ry):
-            self.local_storage_path = self.local_storage_path_ry
-        else:
-            self.local_storage_path = self.local_storage_path_server
-
+        self.local_storage_path = "/var/www/vhosts/oapi.co/mail/local_storage/"
 
         self.email = email
         self.first_name = None
@@ -99,10 +88,6 @@ class User:
 
         return self
 
-
-
-    ########## RYAN'S FUNCTIONS #######
-
     def datetime_to_iso(self, data_dict_or_list):
 
         mode_dict = False
@@ -161,7 +146,6 @@ class User:
                         datetime = parser.parse(value)
                         value = datetime
                     except:
-                        #raise Exception("Failed to parse date " + str(value))
                         pass
 
             elif "list" in str(type(value)):
@@ -178,25 +162,11 @@ class User:
 
 
     def write_data(self, fullPath, dataToWrite):
-        #import cPickle
-        #pickled_file = open(fullPath, 'w')
-        #cPickle.dump(dataToWrite, pickled_file, cPickle.HIGHEST_PROTOCOL)
-        #pickled_file.close()
-
         dataToWrite = self.datetime_to_iso(dataToWrite)
-
         open(fullPath, "w").write(json.dumps(dataToWrite))
 
     def read_data(self, fullPath):
-        #import cPickle
         data = None
-
-        # try:
-        #     pickled_file = open(fullPath, 'r')
-        #     data = cPickle.load(pickled_file)
-        #     pickled_file.close()
-        # except:
-        #     pass
 
         try:
             data = open(fullPath, "r").read()
@@ -208,7 +178,6 @@ class User:
         data = self.iso_to_datetime(data)
 
         return data
-
 
 def create(email, code, credentials):
     User().create(email, code, credentials)

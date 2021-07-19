@@ -1,7 +1,6 @@
 #!/usr/bin/python2
 #
-# Author:  Ryan Martin ryan@ensomniac.com
-#
+# 2010 Ryan Martin
 
 import cgi
 import os
@@ -9,7 +8,6 @@ import json
 import traceback
 import datetime
 
-#from email.MIMEText import MIMEText
 from email.mime.text import MIMEText
 
 import base64
@@ -17,8 +15,6 @@ import requests
 
 import Authorize
 import User
-
-
 
 class EnsomniacMailApi:
     def __init__(self, module_data):
@@ -112,20 +108,12 @@ class EnsomniacMailApi:
         new_user = User.create(email, code, credentials)
 
         self.html_content = self.format_success_html()
-
-        # self.return_data = {"error": None, "credentials": str(credentials.to_json())}
         self.return_data = self.html_content
 
-
     def display_users(self):
-        # displays all users we have a token for
-
         expected_location = self.local_storage_path + "users/"
         all_users = os.listdir(expected_location)
-
         self.return_data = {"error": None, "all_users": all_users, "new_user": str(new_user)}
-
-
 
     def get_user_data_by_email(self, email=None):
         # This allows us to run in the browser or to be called by another internal function in this script
@@ -150,23 +138,6 @@ class EnsomniacMailApi:
         self.return_data = {"error": None, "user_data": str(user_data)}
         return self.return_data
 
-
-    def test_mail(self):
-
-        import Mail
-        message = Mail.create("katie.hilder@gmail.com")
-        message.add_recipient("katie.hilder@gmail.com")
-        message.add_bcc_recipient("Katie <katiehilder@hotmail.com>")
-        message.set_subject("Hello!")
-        message.set_body_text("This is a test from Api.py")
-        result = message.send()
-
-        self.return_data = {"error": None, "result": str(result)}
-
-
-
-    ########### API FUNCTIONS ###########
-
     def format_success_html(self):
         html_content = ["You've successfully authorized your email!"]
         html_content.append("")
@@ -176,8 +147,6 @@ class EnsomniacMailApi:
         style += '''margin:10px;padding:10px;"'''
 
         return "<div " + style + ">" + "<br>\n".join(html_content) + "</div>"
-
-
 
     def format_error_html(self):
         # Print the error to the window rather than displaying it as json
@@ -190,14 +159,6 @@ class EnsomniacMailApi:
         style += '''margin:10px;padding:10px;"'''
 
         return "<div " + style + ">" + "<br>\n".join(html_content) + "</div>"
-
-
-
-
-
-
-
-
 
     def datetime_to_iso(self, data_dict_or_list):
 
@@ -272,33 +233,12 @@ class EnsomniacMailApi:
 
         return clean_data_dict_or_list
 
-
-
-
-
-
-    ########### API FUNCTIONS ###########
-
     def write_data(self, fullPath, dataToWrite):
-        #import cPickle
-        #pickled_file = open(fullPath, 'w')
-        #cPickle.dump(dataToWrite, pickled_file, cPickle.HIGHEST_PROTOCOL)
-        #pickled_file.close()
-
         dataToWrite = self.datetime_to_iso(dataToWrite)
-
         open(fullPath, "w").write(json.dumps(dataToWrite))
 
     def read_data(self, fullPath):
-        #import cPickle
         data = None
-
-        # try:
-        #     pickled_file = open(fullPath, 'r')
-        #     data = cPickle.load(pickled_file)
-        #     pickled_file.close()
-        # except:
-        #     pass
 
         try:
             data = open(fullPath, "r").read()
@@ -310,23 +250,6 @@ class EnsomniacMailApi:
         data = self.iso_to_datetime(data)
 
         return data
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def noFunction(self):
         self.return_data = {"error": "Function not found or not specified"}
@@ -350,8 +273,6 @@ class EnsomniacMailApi:
         html_to_display.append('''</html>''')
 
         print ("\n".join(html_to_display))
-
-        #print self.html_content
 
     def print_return_data(self):
         print ("Content-type: text/plain")
