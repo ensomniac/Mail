@@ -80,9 +80,7 @@ class EnsomniacMailApi:
         # Step 1
         # Get googles URL, provide a way to click URL
         self.redirect_url = Authorize.get_auth_url()
-
         # self.return_data = {"error": None, "redirect_url": self.redirect_url}
-
 
     def create_authorized_user(self):
 

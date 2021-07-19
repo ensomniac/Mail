@@ -17,10 +17,7 @@ from . import User
 
 class Gmail:
     def __init__(self, user):
-
         self.user = User.User(user)
-
-
 
     def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients, sender_name=None):
 

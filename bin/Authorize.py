@@ -14,9 +14,9 @@ class Authorize:
         self.gmail_client_secret = "EjgANOKgqRT2FViDD7nyjj58"
         self.scope = ["https://mail.google.com/", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
         self.redirect_uri = "https://mail.oapi.co/code" # code=sdiofjdsfoidjs
+        self.redirect_uri = "https://mail.socat.co/code" # code=sdiofjdsfoidjs
 
-        self.redirect_url = None
-
+        # self.redirect_url = None
 
     def get_flow(self):
         from oauth2client import client
@@ -40,9 +40,7 @@ class Authorize:
     # Get googles URL, provide a way to click URL
         flow = self.get_flow()
         self.redirect_url = flow.step1_get_authorize_url()
-
         return self.redirect_url
-
 
     def exchange_code(self, code):
 
