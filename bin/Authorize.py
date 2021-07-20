@@ -51,7 +51,13 @@ class Authorize:
         # If no refresh token is provided it means user has already been authorized.
         if not credentials.refresh_token:
             # In order to store refresh token we need to revoke current credentials.
-            credentials.revoke(httplib2.Http())
+
+            try:
+                credentials.revoke(httplib2.Http())
+            except:
+                raise Exception("Failed to revoke, but did we need to revoke?")
+
+
             # Send user back through authorization flow
             self.get_auth_url()
             self.return_data = {"error": "No refresh token"}
