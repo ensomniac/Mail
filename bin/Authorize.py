@@ -46,7 +46,12 @@ class Authorize:
 
         # Step 2: Exchange an authorization code for OAuth2 Credentials
         flow = self.get_flow()
-        credentials = flow.step2_exchange(code)
+
+        try:
+            credentials = flow.step2_exchange(code)
+        except:
+            self.return_data = {"error": "Failed step2_exchange w/ code: " + str(code)}
+            return
 
         # If no refresh token is provided it means user has already been authorized.
         if not credentials.refresh_token:
