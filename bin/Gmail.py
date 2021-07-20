@@ -47,10 +47,6 @@ class Gmail:
         access_token_credentials = client.AccessTokenCredentials(user_data["access_token"], "my-user-agent/1.0") # <oauth2client.client.AccessTokenCredentials object at 0x10fb63c10>
         oauth2_credentials_object = access_token_credentials.new_from_json(user_data["credentials_to_json"]) # <oauth2client.client.OAuth2Credentials object at 0x10fb633d0>
 
-        print(user_data)
-        print("--")
-        print(user_data["credentials_to_json"])
-
         if oauth2_credentials_object.access_token_expired:
             # Access token has expired and a refresh is required
             oauth2_credentials_object.refresh(httplib2.Http())
@@ -61,7 +57,6 @@ class Gmail:
             http_auth = oauth2_credentials_object.authorize(httplib2.Http())
 
         return http_auth
-
 
     def get_service(self, http_auth):
         # Building service....
