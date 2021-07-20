@@ -35,7 +35,6 @@ class Authorize:
 
         return flow
 
-
     def get_auth_url(self):
     # Step 1
     # Get googles URL, provide a way to click URL
@@ -55,7 +54,8 @@ class Authorize:
             self.return_data = {"error": "Failed step2_exchange w/ code: " + str(code) + " TB >> " + err}
             return
 
-        print(credentials)
+        raise Exception("REFRESH TOKEN: " + str(credentials.refresh_token))
+        # raise Exception(credentials)
 
         # If no refresh token is provided it means user has already been authorized.
         if not credentials.refresh_token:
