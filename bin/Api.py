@@ -84,6 +84,9 @@ class EnsomniacMailApi:
 
     def create_authorized_user(self):
 
+        test_path = "/var/www/vhosts/oapi.co/mail/local_storage/flow/test_flow.json"
+        open(test_path, "w").write(json.dumps(self.data))
+
         code = self.data.get("code")
 
         if not code:
