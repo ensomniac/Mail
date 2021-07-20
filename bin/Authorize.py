@@ -51,10 +51,11 @@ class Authorize:
         try:
             credentials = flow.step2_exchange(code)
         except:
-            import traceback
             err = traceback.format_exc()
             self.return_data = {"error": "Failed step2_exchange w/ code: " + str(code) + " TB >> " + err}
             return
+
+        # print(credentials)
 
         # If no refresh token is provided it means user has already been authorized.
         if not credentials.refresh_token:
