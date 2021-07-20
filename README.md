@@ -8,6 +8,7 @@ pip install oauth2client
 pip install apiclient
 pip install google-api-python-client
 pip install --upgrade google-api-python-client
+pip install passlib
 
 # Example for sending mail:
 
@@ -21,3 +22,9 @@ message.set_body_html("Test from new server")
 message.send()
 
 {'error': None, 'send_error': None}
+
+# WSS Ports must be opened
+sudo iptables -A INPUT -p tcp --dport 8335 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8334 -j ACCEPT
+service iptables save
+
