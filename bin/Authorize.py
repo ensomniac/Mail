@@ -6,6 +6,7 @@ import os
 import cgi
 import httplib2
 import User
+import traceback
 
 class Authorize:
     def __init__(self):
@@ -62,7 +63,7 @@ class Authorize:
             try:
                 credentials.revoke(httplib2.Http())
             except:
-                raise Exception("Failed to revoke, but did we need to revoke?")
+                raise Exception("Failed to revoke, but did we need to revoke? ERROR: " + str(traceback.format_exc()))
                 # pass
 
 
@@ -70,9 +71,7 @@ class Authorize:
             self.get_auth_url()
             self.return_data = {"error": "No refresh token"}
 
-            import traceback
-            err = traceback.format_exc()
-            raise Exception("Failed to exchange code: " + str(code))
+            raise Exception("Failed to exchange code: " + str(code) + " ERR: " + traceback.format_exc())
 
             return
 
