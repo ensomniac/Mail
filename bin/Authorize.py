@@ -32,6 +32,7 @@ class Authorize:
 
         flow.params['access_type'] = 'offline'         # offline access
         flow.params['include_granted_scopes'] = "true"   # incremental auth
+        flow.params['prompt'] = "consent"   # https://github.com/googleapis/google-api-python-client/issues/213
 
         return flow
 
