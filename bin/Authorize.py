@@ -55,7 +55,8 @@ class Authorize:
             try:
                 credentials.revoke(httplib2.Http())
             except:
-                raise Exception("Failed to revoke, but did we need to revoke?")
+                # raise Exception("Failed to revoke, but did we need to revoke?")
+                pass
 
 
             # Send user back through authorization flow
