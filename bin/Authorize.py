@@ -55,7 +55,7 @@ class Authorize:
             self.return_data = {"error": "Failed step2_exchange w/ code: " + str(code) + " TB >> " + err}
             return
 
-        raise Exception("REFRESH TOKEN: " + str(credentials.refresh_token))
+        # raise Exception("REFRESH TOKEN: " + str(credentials.refresh_token))
         # raise Exception(credentials)
 
         # If no refresh token is provided it means user has already been authorized.
@@ -67,7 +67,6 @@ class Authorize:
             except:
                 raise Exception("Failed to revoke, but did we need to revoke? ERROR: " + str(traceback.format_exc()))
                 # pass
-
 
             # Send user back through authorization flow
             self.get_auth_url()
