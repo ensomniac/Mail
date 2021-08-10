@@ -26,8 +26,23 @@ class Authorize:
             print("\nERROR: Missing Google Config! Expected " + config_path + "\n")
             sys.exit()
 
-        for line in open(config_path, "r").read().split():
-            print(line)
+        gmail_client_id = None
+        gmail_client_secret = None
+        redirect_uri = None
+
+        for line in open(config_path, "r").read().split("\n"):
+            line = line.strip()
+            if line.startswith("#"): continue
+            if "=" not in line: continue
+
+            if line.startswith("gmail_client_id"):
+                gmail_client_id = line.split("=")[-1].strip()
+
+            if line.startswith("gmail_client_secret"):
+                gmail_client_secret = line.split("=")[-1].strip()
+
+            if line.startswith("redirect_uri"):
+                redirect_uri = line.split("=")[-1].strip()
 
         gmail_client_id = None
         gmail_client_secret = None
