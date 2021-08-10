@@ -11,6 +11,8 @@ import traceback
 class Authorize:
     def __init__(self):
 
+        self.gmail_client_id, self.gmail_client_secret = self.get_google_client()
+
         self.gmail_client_id = "947806183438-e1hirfb16k1h1d4jnc7u05u1vu3n2pnh.apps.googleusercontent.com"
         self.gmail_client_secret = "EjgANOKgqRT2FViDD7nyjj58"
         self.scope = ["https://mail.google.com/", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
@@ -18,6 +20,15 @@ class Authorize:
         self.redirect_uri = "https://mail.socat.co/code" # code=sdiofjdsfoidjs
 
         # self.redirect_url = None
+
+    def get_google_client(self):
+        gmail_client_id = None
+        gmail_client_secret = None
+
+        print("gmail_client_id: " + str(gmail_client_id))
+        print("gmail_client_secret: " + str(gmail_client_secret))
+
+        return gmail_client_id, gmail_client_secret
 
     def get_flow(self):
         from oauth2client import client
