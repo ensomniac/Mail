@@ -44,10 +44,6 @@ class Authorize:
             if line.startswith("redirect_uri"):
                 redirect_uri = line.split("=")[-1].strip()
 
-        gmail_client_id = None
-        gmail_client_secret = None
-        redirect_uri = None
-
         print("gmail_client_id: " + str(gmail_client_id))
         print("gmail_client_secret: " + str(gmail_client_secret))
         print("redirect_uri: " + str(redirect_uri))
