@@ -3,6 +3,7 @@
 # 2010 Ryan Martin
 
 import os
+import sys
 import cgi
 import httplib2
 import traceback
@@ -12,8 +13,6 @@ class Authorize:
 
         self.gmail_client_id, self.gmail_client_secret = self.get_google_client()
 
-        self.gmail_client_id = "947806183438-e1hirfb16k1h1d4jnc7u05u1vu3n2pnh.apps.googleusercontent.com"
-        self.gmail_client_secret = "EjgANOKgqRT2FViDD7nyjj58"
         self.scope = ["https://mail.google.com/", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
         self.redirect_uri = "https://mail.oapi.co/code" # code=sdiofjdsfoidjs
         self.redirect_uri = "https://mail.socat.co/code" # code=sdiofjdsfoidjs
@@ -21,6 +20,15 @@ class Authorize:
         # self.redirect_url = None
 
     def get_google_client(self):
+        config_path = "/etc/mail.d/google_client_config"
+
+        if not os.path.exists(config_path):
+            print("\nERROR: Missing Google Config! Expected " + config_path + "\n")
+            sys.exit()
+
+        for line in open(config_path, "r").read().split():
+            print(line)
+
         gmail_client_id = None
         gmail_client_secret = None
 
