@@ -5,7 +5,6 @@
 import os
 import cgi
 import httplib2
-import User
 import traceback
 
 class Authorize:
@@ -97,5 +96,3 @@ def exchange_code(code):
     credentials = Authorize().exchange_code(code)
     return credentials
 
-# user = User.User("katie@gmail.com")
-# print user.get_user_data()
