@@ -11,13 +11,13 @@ import traceback
 class Authorize:
     def __init__(self):
 
-        self.gmail_client_id, self.gmail_client_secret = self.get_google_client()
+        self.gmail_client_id, self.gmail_client_secret, self.redirect_uri = self.get_google_client()
 
-        self.scope = ["https://mail.google.com/", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
-        self.redirect_uri = "https://mail.oapi.co/code" # code=sdiofjdsfoidjs
-        self.redirect_uri = "https://mail.socat.co/code" # code=sdiofjdsfoidjs
-
-        # self.redirect_url = None
+        self.scope = [
+            "https://mail.google.com/",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile"
+        ]
 
     def get_google_client(self):
         config_path = "/etc/mail.d/google_client_config"
@@ -31,11 +31,13 @@ class Authorize:
 
         gmail_client_id = None
         gmail_client_secret = None
+        redirect_uri = None
 
         print("gmail_client_id: " + str(gmail_client_id))
         print("gmail_client_secret: " + str(gmail_client_secret))
+        print("redirect_uri: " + str(redirect_uri))
 
-        return gmail_client_id, gmail_client_secret
+        return gmail_client_id, gmail_client_secret, redirect_uri
 
     def get_flow(self):
         from oauth2client import client

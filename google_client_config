@@ -2,3 +2,4 @@
 
 gmail_client_id = 947806183438-e1hirfb16k1h1d3jnc7u05u1vu3n2pnh.apps.googleusercontent.com
 gmail_client_secret = EjgANOKqgRT2FViDD7nyjj58
+redirect_uri = https://mail.oapi.co/code
