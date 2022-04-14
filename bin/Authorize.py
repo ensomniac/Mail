@@ -2,11 +2,11 @@
 #
 # 2010 Ryan Martin
 
+# TODO: Is this now deprecated in favor of the Dash.Authenticate module?
+
 import os
 import sys
-import cgi
-import httplib2
-import traceback
+
 
 class Authorize:
     def __init__(self):
@@ -32,8 +32,11 @@ class Authorize:
 
         for line in open(config_path, "r").read().split("\n"):
             line = line.strip()
-            if line.startswith("#"): continue
-            if "=" not in line: continue
+            if line.startswith("#"):
+                continue
+
+            if "=" not in line:
+                continue
 
             if line.startswith("gmail_client_id"):
                 gmail_client_id = line.split("=")[-1].strip()
@@ -51,7 +54,7 @@ class Authorize:
         return gmail_client_id, gmail_client_secret, redirect_uri
 
     def get_flow(self):
-        from oauth2client import client
+        # from oauth2client import client
         from oauth2client.client import OAuth2WebServerFlow
 
         flow = OAuth2WebServerFlow(
@@ -61,15 +64,15 @@ class Authorize:
             redirect_uri=self.redirect_uri
         )
 
-        flow.params['access_type'] = 'offline'         # offline access
-        flow.params['include_granted_scopes'] = "true"   # incremental auth
-        flow.params['prompt'] = "consent"   # https://github.com/googleapis/google-api-python-client/issues/213
+        flow.params['access_type'] = 'offline'  # offline access
+        flow.params['include_granted_scopes'] = "true"  # incremental auth
+        flow.params['prompt'] = "consent"  # https://github.com/googleapis/google-api-python-client/issues/213
 
         return flow
 
     def get_auth_url(self):
-    # Step 1
-    # Get googles URL, provide a way to click URL
+        # Step 1
+        # Get googles URL, provide a way to click URL
         flow = self.get_flow()
         self.redirect_url = flow.step1_get_authorize_url()
         return self.redirect_url
@@ -82,7 +85,9 @@ class Authorize:
         try:
             credentials = flow.step2_exchange(code)
         except:
-            err = traceback.format_exc()
+            from traceback import format_exc
+
+            err = format_exc()
             self.return_data = {"error": "Failed step2_exchange w/ code: " + str(code) + " TB >> " + err}
             return
 
@@ -94,26 +99,32 @@ class Authorize:
             # In order to store refresh token we need to revoke current credentials.
 
             try:
-                credentials.revoke(httplib2.Http())
+                from httplib2 import Http
+                credentials.revoke(Http())
             except:
-                raise Exception("Failed to revoke, but did we need to revoke? ERROR: " + str(traceback.format_exc()))
+                from traceback import format_exc
+
+                raise Exception("Failed to revoke, but did we need to revoke? ERROR: " + str(format_exc()))
                 # pass
 
             # Send user back through authorization flow
             self.get_auth_url()
             self.return_data = {"error": "No refresh token"}
 
-            raise Exception("Failed to exchange code: " + str(code) + " ERR: " + traceback.format_exc())
+            from traceback import format_exc
 
-            return
+            raise Exception("Failed to exchange code: " + str(code) + " ERR: " + format_exc())
+
+            # return
 
         return credentials
+
 
 def get_auth_url():
     auth_url = Authorize().get_auth_url()
     return auth_url
 
+
 def exchange_code(code):
     credentials = Authorize().exchange_code(code)
     return credentials
-

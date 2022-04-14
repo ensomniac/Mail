@@ -2,19 +2,10 @@
 #
 # 2010 Ryan Martin
 
-import cgi
 import os
+import cgi
 import json
-import traceback
-import datetime
 
-from email.mime.text import MIMEText
-
-import base64
-import requests
-
-import Authorize
-import User
 
 class EnsomniacMailApi:
     def __init__(self, module_data):
@@ -45,7 +36,8 @@ class EnsomniacMailApi:
             try:
                 self.function()
             except:
-                tb = traceback.format_exc()
+                from traceback import format_exc
+                tb = format_exc()
                 self.return_data = {"error": "There was a scripting problem: " + str(tb)}
 
         if not self.html_content and not self.redirect_url and self.return_data.get("error") and len(self.return_data.keys()) == 1:
@@ -57,8 +49,6 @@ class EnsomniacMailApi:
             self._redirect()
         else:
             self.print_return_data()
-
-
 
     def operator(self):
         # Act as a switchboard
@@ -74,12 +64,11 @@ class EnsomniacMailApi:
         else:
             self.return_data = {"error": "Unknown Service"}
 
-
-
     def authorize(self):
         # Step 1
         # Get googles URL, provide a way to click URL
-        self.redirect_url = Authorize.get_auth_url()
+        from Authorize import get_auth_url
+        self.redirect_url = get_auth_url()
         # self.return_data = {"error": None, "redirect_url": self.redirect_url}
 
     def create_authorized_user(self):
@@ -93,10 +82,13 @@ class EnsomniacMailApi:
             self.return_data = {"error": "There was no code from Google"}
             return
 
-        credentials = Authorize.exchange_code(code)
+        from Authorize import exchange_code
+        credentials = exchange_code(code)
         email = credentials.id_token.get("email")
 
-        new_user = User.create(email, code, credentials)
+        from User import create
+
+        create(email, code, credentials)
 
         self.html_content = self.format_success_html()
         self.return_data = self.html_content
@@ -104,6 +96,7 @@ class EnsomniacMailApi:
     def display_users(self):
         expected_location = self.local_storage_path + "users/"
         all_users = os.listdir(expected_location)
+        new_user = {}  # This variable was missing - where is it supposed to come from?
         self.return_data = {"error": None, "all_users": all_users, "new_user": str(new_user)}
 
     def get_user_data_by_email(self, email=None):
@@ -113,8 +106,7 @@ class EnsomniacMailApi:
 
         expected_location = self.local_storage_path + "users/" + email
 
-        file_exists = os.path.exists(expected_location)
-
+        # file_exists = os.path.exists(expected_location)
 
         if not os.path.exists(expected_location):
             self.return_data = {"error": "Unable to locate authenticated user by e-mail address '" + email + "'"}
@@ -130,8 +122,7 @@ class EnsomniacMailApi:
         return self.return_data
 
     def format_success_html(self):
-        html_content = ["You've successfully authorized your email!"]
-        html_content.append("")
+        html_content = ["You've successfully authorized your email!", ""]
 
         style = '''style="text-decoration:none;font-weight:normal;color:#222;background:rgba(143, 133, 233, 0.2);'''
         style += '''font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;'''
@@ -141,8 +132,8 @@ class EnsomniacMailApi:
 
     def format_error_html(self):
         # Print the error to the window rather than displaying it as json
-        html_content = ["<b>There was a problem with this request:</b>"]
-        html_content.append("")
+        html_content = ["<b>There was a problem with this request:</b>", ""]
+
         html_content.extend(self.return_data.get("error").split("\n"))
 
         style = '''style="text-decoration:none;font-weight:normal;color:#222;background:rgba(143, 133, 233, 0.2);'''
@@ -206,6 +197,8 @@ class EnsomniacMailApi:
                 if "T" in value and ":" in value and "-" in value:
 
                     try:
+                        from dateutil import parser
+
                         datetime = parser.parse(value)
                         value = datetime
                     except:
@@ -224,17 +217,18 @@ class EnsomniacMailApi:
 
         return clean_data_dict_or_list
 
-    def write_data(self, fullPath, dataToWrite):
-        dataToWrite = self.datetime_to_iso(dataToWrite)
-        open(fullPath, "w").write(json.dumps(dataToWrite))
+    def write_data(self, full_path, data_to_write):
+        data_to_write = self.datetime_to_iso(data_to_write)
 
-    def read_data(self, fullPath):
-        data = None
+        open(full_path, "w").write(json.dumps(data_to_write))
+
+    def read_data(self, full_path):
+        # data = None
 
         try:
-            data = open(fullPath, "r").read()
+            data = open(full_path, "r").read()
         except:
-            raise Exception("Failed to read file: " + fullPath)
+            raise Exception("Failed to read file: " + full_path)
 
         data = json.loads(data)
 
@@ -246,8 +240,7 @@ class EnsomniacMailApi:
         self.return_data = {"error": "Function not found or not specified"}
 
     def print_html(self):
-        html_to_display = []
-        html_to_display.append('Content-Type: text/html\n')
+        html_to_display = ['Content-Type: text/html\n']
 
         if self.htmlTitle:
             title = self.htmlTitle
@@ -263,24 +256,24 @@ class EnsomniacMailApi:
         html_to_display.append('''<body style="text-decoration:none;padding:0px;margin:0px;border:0px;">''' + self.html_content + '''</body>''')
         html_to_display.append('''</html>''')
 
-        print ("\n".join(html_to_display))
+        print("\n".join(html_to_display))
 
     def print_return_data(self):
-        print ("Content-type: text/plain")
-        print ("")
-        print (str(json.dumps(self.return_data)))
+        print("Content-type: text/plain")
+        print("")
+        print(str(json.dumps(self.return_data)))
 
     def _redirect(self):
-        print ("Location:" + self.redirect_url + "\r\n")
+        print("Location:" + self.redirect_url + "\r\n")
 
     def get_data(self):
         data = {}
 
         for key in self.FieldStorage.keys():
-            miniFieldStorage = self.FieldStorage[key]
-            data[key] = miniFieldStorage.value
+            mini_field_storage = self.FieldStorage[key]
+            data[key] = mini_field_storage.value
 
-            self.miniStorage[key] = miniFieldStorage
+            self.miniStorage[key] = mini_field_storage
 
         return data
 
