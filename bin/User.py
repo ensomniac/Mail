@@ -66,21 +66,16 @@ class User:
             raise Exception("There was a problem reading the user data for '" + self.email + "' (2)")
 
         # (Temp, see note above) Convert the data to the same format that this module currently expects
-        try:
-            user_data = {
-                "access_token": full_user_data["token_data"]["access_token"],
-                "code": full_user_data["code"],
-                "created_on": full_user_data["flow_initiated"],
-                "credentials_to_json": json.dumps(json.dumps(full_user_data["token_data"])),  # Have stringify it twice to make it match the current escaped format
-                "email": full_user_data["token_data"]["id_token"]["email"],
-                "first_name": full_user_data["token_data"]["id_token"].get("given_name") or self.email.split("@")[0].title(),
-                "last_name": full_user_data["token_data"]["id_token"].get("family_name") or "",
-                "refresh_token": full_user_data["token_data"]["refresh_token"]
-            }
-        except Exception as e:
-            raise Exception(f"{e}\n\n{full_user_data}")
-
-        user_data = self.iso_to_datetime(user_data)
+        user_data = self.iso_to_datetime({
+            "access_token": full_user_data["token_data"]["access_token"],
+            "code": full_user_data["code"],
+            "created_on": full_user_data["flow_initiated"],
+            "credentials_to_json": full_user_data["token_data"],
+            "email": full_user_data["token_data"]["id_token"]["email"],
+            "first_name": full_user_data["token_data"]["id_token"].get("given_name") or self.email.split("@")[0].title(),
+            "last_name": full_user_data["token_data"]["id_token"].get("family_name") or "",
+            "refresh_token": full_user_data["token_data"]["refresh_token"]
+        })
 
         self.first_name = user_data.get("first_name")
         self.last_name = user_data.get("last_name")
