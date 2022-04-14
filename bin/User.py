@@ -70,7 +70,7 @@ class User:
             "access_token": full_user_data["token_data"]["access_token"],
             "code": full_user_data["code"],
             "created_on": full_user_data["flow_initiated"],
-            "credentials_to_json": json.dumps(json.dumps(full_user_data["token_data"])),  # Have stringify it twice to make it match the current escaped format
+            "credentials_to_json": json.dumps(str(json.dumps(full_user_data["token_data"]))),  # Have stringify it twice to make it match the current escaped format
             "email": full_user_data["token_data"]["id_token"]["email"],
             "first_name": full_user_data["token_data"]["id_token"]["given_name"],
             "last_name": full_user_data["token_data"]["id_token"]["family_name"],
