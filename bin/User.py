@@ -70,7 +70,7 @@ class User:
             "access_token": full_user_data["token_data"]["access_token"],
             "code": full_user_data["code"],
             "created_on": full_user_data["flow_initiated"],
-            "credentials_to_json": full_user_data["token_data"],
+            "credentials_to_json": json.dumps(json.dumps(full_user_data["token_data"])),
             "email": full_user_data["token_data"]["id_token"]["email"],
             "first_name": full_user_data["token_data"]["id_token"].get("given_name") or self.email.split("@")[0].title(),
             "last_name": full_user_data["token_data"]["id_token"].get("family_name") or "",
