@@ -2,16 +2,17 @@
 #
 # 2010 Ryan Martin
 
-import os
+# import os
 
-from . import User
-from . import Gmail
+from .User import User
+from .Gmail import Gmail
+
 
 class EnsomniacMail:
     def __init__(self, sender_email):
         self.sender = self.verify_sender(sender_email)
-        self.gmail = Gmail.Gmail(self.sender)
-        self.user = User.User(self.sender)
+        self.gmail = Gmail(self.sender)
+        self.user = User(self.sender)
         self.user_data = self.user.get_user_data()
 
         self.sender_name = ""
@@ -23,20 +24,16 @@ class EnsomniacMail:
         self.bcc_recipients = []
 
     def verify_sender(self, sender_email):
-        # The first step is to make sure that the send from
+        # The first step is to make sure that the send-from
         # e-mail is actually authenticated through our system
         # Check the user data to find the user token and verify
         # the token is still good. If it's good, no need to do anything.
         # If there is a problem, raise an exception.
 
-        user = User.User(sender_email)
+        user = User(sender_email)
+        http_auth = Gmail(sender_email).get_http_auth(user.get_user_data())
 
-        http_auth = Gmail.Gmail(sender_email).get_http_auth(user.get_user_data())
-
-        if http_auth:
-            sender_valid = True
-
-        if not sender_valid:
+        if not bool(http_auth):
             raise Exception("The send-from e-mail address '" + self.sender + "' is not authenticated through our mail system. To authenticate, do these steps...")
 
         return sender_email
@@ -86,9 +83,8 @@ class EnsomniacMail:
 
         return recipient_str
 
-
     def send(self, recipient_email=None, recipient_name=""):
-        # Check to make sure we have all of the parts we need
+        # Check to make sure we have all the parts we need
         # Use the gmail API to send the mail
 
         # recipient_email = used for batch sending
@@ -125,8 +121,8 @@ class EnsomniacMail:
 
         return send_result
 
+
 # This lets us import the module and call Mail.create("ryan@ensomniac.com")
 # It will return an instance of the EnsomniacMail class
 def create(sender_email):
     return EnsomniacMail(sender_email)
-
