@@ -26,10 +26,15 @@ class Gmail:
         message['to'] = ",".join(recipients)
         message['bcc'] = ",".join(bcc_recipients)
 
+        tag = "<" + self.user.email + ">"
+
         if sender_name:
-            message['from'] = sender_name + "<" + self.user.email + ">"
+            if tag not in sender_name:
+                sender_name += tag
+
+            message['from'] = sender_name
         else:
-            message['from'] = self.user.first_name + " " + self.user.last_name + "<" + self.user.email + ">"
+            message['from'] = self.user.first_name + " " + self.user.last_name + tag
 
         message['subject'] = subject
 

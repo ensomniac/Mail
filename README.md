@@ -14,7 +14,7 @@ REQUIRES:
 
     import Mail
     message = Mail.create("ryan@generallyconcerned.com")
-    message.set_sender_name("Ryan Martin <ryan@generallyconcerned.com>")
+    message.set_sender_name("Ryan Martin")
     message.add_recipient("ryan@ensomniac.com")
     message.add_recipient("ryan@oapi.co")
     message.add_recipient("ryan@ryan.cam")
