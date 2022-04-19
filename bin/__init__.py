@@ -10,11 +10,10 @@ from .Gmail import Gmail
 
 class EnsomniacMail:
     def __init__(self, sender_email):
+        self.user = User(sender_email)
+        self.gmail = Gmail(sender_email)
         self.sender = self.verify_sender(sender_email)
-        self.gmail = Gmail(self.sender)
-        self.user = User(self.sender)
-        self.user_data = self.user.get_user_data()
-
+        self.user_data = self.user.data
         self.sender_name = ""
         self.subject = ""
         self.body_html = ""
@@ -30,11 +29,10 @@ class EnsomniacMail:
         # the token is still good. If it's good, no need to do anything.
         # If there is a problem, raise an exception.
 
-        user = User(sender_email)
-        http_auth = Gmail(sender_email).get_http_auth(user.get_user_data())
+        http_auth = self.gmail.get_http_auth(self.user.data)
 
         if not bool(http_auth):
-            raise Exception("The send-from e-mail address '" + self.sender + "' is not authenticated through our mail system. To authenticate, do these steps...")
+            raise Exception("The send-from e-mail address '" + sender_email + "' is not authenticated through our mail system. To authenticate, do these steps...")
 
         return sender_email
 
