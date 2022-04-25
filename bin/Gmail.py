@@ -49,19 +49,33 @@ class Gmail:
 
         if attachment_file_paths:
             from os.path import basename
-            from email.mime.application import MIMEApplication
+            from email.mime.base import MIMEBase
+            from email.encoders import encode_base64
+            # from email.mime.application import MIMEApplication
 
             for file_path in attachment_file_paths:
                 filename = basename(file_path)
 
-                with open(file_path, "rb") as file_content:
-                    part = MIMEApplication(
-                        file_content.read(),
-                        Name=filename
-                    )
+                # with open(file_path, "rb") as file_content:
+                #     part = MIMEApplication(
+                #         file_content.read(),
+                #         Name=filename
+                #     )
+                #
+                # # After the file is closed
+                # part["Content-Disposition"] = f'attachment; filename="{filename}"'
 
-                # After the file is closed
-                part["Content-Disposition"] = f'attachment; filename="{filename}"'
+                part = MIMEBase("application", "octet-stream")
+
+                with open(file_path, "rb") as file_content:
+                    part.set_payload(file_content.read())
+
+                encode_base64(part)
+
+                part.add_header(
+                    "Content-Disposition",
+                    f"attachment; filename={filename}"
+                )
 
                 message.attach(part)
 
