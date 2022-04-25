@@ -21,6 +21,7 @@ class EnsomniacMail:
         self.body = ""
         self.recipients = []
         self.bcc_recipients = []
+        self.reply_to = ""
 
     def verify_sender(self, sender_email):
         # The first step is to make sure that the send-from
@@ -36,55 +37,54 @@ class EnsomniacMail:
 
         return sender_email
 
-    def set_sender_name(self, sender_name):
+    def set_reply_to(self, email, name=""):
+        self.reply_to = self.generate_recipient_str(email, name)
+
+    def set_sender_name(self, name):
         # Sets the display name for the e-mail. First name and last name is used as a default.
-        self.sender_name = sender_name
+        self.sender_name = name
 
     def set_subject(self, subject):
         # The subject of the e-mail
         self.subject = subject
 
-    def set_body_html(self, body_html):
+    def set_body_html(self, html):
         # The body of the e-mail, with HTML tags allowed
-        self.body_html = body_html
+        self.body_html = html
 
-    def set_body_text(self, body_text):
+    def set_body_text(self, text):
         # An optional text only variation of the e-mail, in case a
         # recipient can't get HTML e-mails for some weird reason
-        self.body_text = body_text
+        self.body_text = text
 
     def set_body(self, body):
-
         self.body_text = body
         self.body_html = body
 
-    def add_recipient(self, recipient_email, recipient_name=""):
+    def add_recipient(self, email, name=""):
         # Add a recipient
         # If we pass a name, the message is composed with the proper bracket name string:
+        self.recipients.append(self.generate_recipient_str(email, name))
 
-        self.recipients.append(self.generate_recipient_str(recipient_email, recipient_name))
-
-    def add_bcc_recipient(self, bcc_recipient_email, bcc_recipient_name=""):
+    def add_bcc_recipient(self, email, name=""):
         # Add a bcc recipient
         # If we pass a name, the message is composed with the proper bracket name string:
+        self.bcc_recipients.append(self.generate_recipient_str(email, name))
 
-        self.bcc_recipients.append(self.generate_recipient_str(bcc_recipient_email, bcc_recipient_name))
-
-    def generate_recipient_str(self, recipient_email, recipient_name=""):
+    # TODO: This can likely be replaced by email.utils.formataddr
+    def generate_recipient_str(self, email, name=""):
         # Convert <email> & <First name, Last Name> into "Ryan Martin <ryan@ensomniac.com>"
-
-        if recipient_name:
+        if name:
             # "Ryan Martin <ryan@ensomniac.com>"
-            recipient_str = recipient_name + " <" + recipient_email + ">"
+            recipient_str = name + " <" + email + ">"
         else:
-            recipient_str = recipient_email
+            recipient_str = email
 
         return recipient_str
 
-    def send(self, recipient_email=None, recipient_name=""):
+    def send(self, email=None, name=""):
         # Check to make sure we have all the parts we need
         # Use the gmail API to send the mail
-
         # recipient_email = used for batch sending
         # recipient_name = used for batch sending
 
@@ -98,11 +98,13 @@ class EnsomniacMail:
             return {"error": "subject not specified"}
 
         local_recipients = []
+
         for recipient in self.recipients:
             local_recipients.append(recipient)
 
-        if recipient_email:
-            batch_addition = self.generate_recipient_str(recipient_email, recipient_name)
+        if email:
+            batch_addition = self.generate_recipient_str(email, name)
+
             local_recipients.append(batch_addition)
 
         send_error = self.gmail.send_message(
@@ -112,12 +114,14 @@ class EnsomniacMail:
             local_recipients,
             self.subject,
             self.bcc_recipients,
-            self.sender_name
+            self.sender_name,
+            self.reply_to
         )
 
-        send_result = {"error": None, "send_error": send_error}
-
-        return send_result
+        return {
+            "error": None,
+            "send_error": send_error
+        }
 
 
 # This lets us import the module and call Mail.create("ryan@ensomniac.com")

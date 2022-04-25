@@ -16,15 +16,14 @@ class Gmail:
     def __init__(self, user):
         self.user = User(user)
 
-    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients, sender_name=None):
-
+    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients, sender_name="", reply_to=""):
         http_auth = self.get_http_auth(user_data)
         service = self.get_service(http_auth)
 
-        # Creating message....
+        # Creating message
         message = MIMEMultipart("alternative")
-        message['to'] = ",".join(recipients)
-        message['bcc'] = ",".join(bcc_recipients)
+        message["to"] = ",".join(recipients)
+        message["bcc"] = ",".join(bcc_recipients)
 
         tag = "<" + self.user.email + ">"
 
@@ -32,18 +31,21 @@ class Gmail:
             if tag not in sender_name:
                 sender_name += tag
 
-            message['from'] = sender_name
+            message["from"] = sender_name
         else:
-            message['from'] = self.user.first_name + " " + self.user.last_name + tag
+            message["from"] = self.user.first_name + " " + self.user.last_name + tag
 
-        message['subject'] = subject
+        if reply_to:
+            message["Reply-To"] = reply_to
+
+        message["subject"] = subject
 
         message.attach(MIMEText(body_text, "plain"))
         message.attach(MIMEText(body_html, "html"))
 
         from base64 import urlsafe_b64encode
 
-        message_raw = {'raw': urlsafe_b64encode(message.as_string().encode()).decode()}
+        message_raw = dict(raw=urlsafe_b64encode(message.as_string().encode()).decode())
 
         service.users().messages().send(userId="me", body=message_raw).execute()
 
@@ -60,7 +62,6 @@ class Gmail:
             oauth2_credentials_object.refresh(Http())
 
             http_auth = oauth2_credentials_object.authorize(Http())
-
         else:
             http_auth = oauth2_credentials_object.authorize(Http())
 
