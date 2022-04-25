@@ -126,8 +126,7 @@ class EnsomniacMail:
 
         return {
             "error": None,
-            "send_error": send_error,
-            "raw": send_error
+            "send_error": send_error
         }
 
 

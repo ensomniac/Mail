@@ -4,6 +4,8 @@
 
 # import os
 # import datetime
+import os.path
+
 from .User import User
 from email.mime.text import MIMEText
 from logging import basicConfig, CRITICAL
@@ -48,42 +50,56 @@ class Gmail:
         message.attach(MIMEText(body_html, "html"))
 
         if attachment_file_paths:
-            from os.path import basename
-            from email.mime.base import MIMEBase
-            from email.encoders import encode_base64
-            # from email.mime.application import MIMEApplication
-
             for file_path in attachment_file_paths:
-                filename = basename(file_path)
-
-                # with open(file_path, "rb") as file_content:
-                #     part = MIMEApplication(
-                #         file_content.read(),
-                #         Name=filename
-                #     )
-                #
-                # # After the file is closed
-                # part["Content-Disposition"] = f'attachment; filename="{filename}"'
-
-                part = MIMEBase("application", "octet-stream")
-
-                with open(file_path, "rb") as file_content:
-                    part.set_payload(file_content.read())
-
-                encode_base64(part)
-
-                part.add_header(
-                    "Content-Disposition",
-                    f"attachment; filename={filename}"
-                )
-
-                message.attach(part)
+                message = self.add_attachment_to_message(message, file_path)
 
         message_raw = dict(raw=urlsafe_b64encode(message.as_string().encode()).decode())
 
         service.users().messages().send(userId="me", body=message_raw).execute()
 
-        return message_raw
+    def add_attachment_to_message(self, message, file_path):
+        if not os.path.exists(file_path):
+            return message
+
+        from os.path import basename
+        from mimetypes import guess_type
+
+        content_type, encoding = guess_type(file_path)
+
+        if content_type is None or encoding is not None:
+            content_type = "application/octet-stream"
+
+        main_type, sub_type = content_type.split("/", 1)
+        file_reader = open(file_path, "rb")
+        file_bytes = file_reader.read()
+
+        if main_type == "text":
+            attachment = MIMEText(file_bytes, _subtype=sub_type)
+
+        elif main_type == "image":
+            from email.mime.image import MIMEImage
+
+            attachment = MIMEImage(file_bytes, _subtype=sub_type)
+
+        elif main_type == "audio":
+            from email.mime.audio import MIMEAudio
+
+            attachment = MIMEAudio(file_bytes, _subtype=sub_type)
+
+        else:
+            from email.mime.base import MIMEBase
+
+            attachment = MIMEBase(main_type, sub_type)
+
+            attachment.set_payload(file_bytes)
+
+        file_reader.close()
+
+        attachment.add_header("Content-Disposition", "attachment", filename=basename(file_path))
+
+        message.attach(attachment)
+
+        return message
 
     def get_http_auth(self, user_data):
         from httplib2 import Http
