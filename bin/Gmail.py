@@ -99,6 +99,8 @@ class Gmail:
 
         message.attach(attachment)
 
+        raise Exception(file_path)
+
         return message
 
     def get_http_auth(self, user_data):
