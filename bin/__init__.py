@@ -20,6 +20,7 @@ class EnsomniacMail:
         self.body_text = ""
         self.body = ""
         self.recipients = []
+        self.cc_recipients = []
         self.bcc_recipients = []
         self.reply_to = ""
 
@@ -66,6 +67,9 @@ class EnsomniacMail:
         # If we pass a name, the message is composed with the proper bracket name string:
         self.recipients.append(self.generate_recipient_str(email, name))
 
+    def add_cc_recipient(self, email, name=""):
+        self.cc_recipients.append(self.generate_recipient_str(email, name))
+
     def add_bcc_recipient(self, email, name=""):
         # Add a bcc recipient
         # If we pass a name, the message is composed with the proper bracket name string:
@@ -108,14 +112,15 @@ class EnsomniacMail:
             local_recipients.append(batch_addition)
 
         send_error = self.gmail.send_message(
-            self.user_data,
-            self.body_text,
-            self.body_html,
-            local_recipients,
-            self.subject,
-            self.bcc_recipients,
-            self.sender_name,
-            self.reply_to
+            user_data=self.user_data,
+            body_text=self.body_text,
+            body_html=self.body_html,
+            recipients=local_recipients,
+            subject=self.subject,
+            cc_recipients=self.cc_recipients,
+            bcc_recipients=self.bcc_recipients,
+            sender_name=self.sender_name,
+            reply_to=self.reply_to
         )
 
         return {
