@@ -55,7 +55,7 @@ class Gmail:
 
         # message_raw = dict(raw=urlsafe_b64encode(message.as_string().encode()).decode())
         # message_raw = urlsafe_b64encode(message.as_string().encode())
-        message_raw = message
+        message_raw = message.as_string()
 
         service.users().messages().send(userId="me", body=message_raw).execute()
 
