@@ -69,6 +69,8 @@ class Gmail:
 
         service.users().messages().send(userId="me", body=message_raw).execute()
 
+        return message_raw
+
     def get_http_auth(self, user_data):
         from httplib2 import Http
         from oauth2client import client
