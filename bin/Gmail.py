@@ -16,7 +16,9 @@ class Gmail:
     def __init__(self, user):
         self.user = User(user)
 
-    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients=[], sender_name="", reply_to=""):
+    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients=[], sender_name="", reply_to="", attachment_file_paths=[]):
+        from base64 import urlsafe_b64encode
+
         http_auth = self.get_http_auth(user_data)
         service = self.get_service(http_auth)
 
@@ -45,7 +47,23 @@ class Gmail:
         message.attach(MIMEText(body_text, "plain"))
         message.attach(MIMEText(body_html, "html"))
 
-        from base64 import urlsafe_b64encode
+        if attachment_file_paths:
+            from os.path import basename
+            from email.mime.application import MIMEApplication
+
+            for file_path in attachment_file_paths:
+                filename = basename(file_path)
+
+                with open(file_path, "rb") as file_content:
+                    part = MIMEApplication(
+                        file_content.read(),
+                        Name=filename
+                    )
+
+                # After the file is closed
+                part["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+                message.attach(part)
 
         message_raw = dict(raw=urlsafe_b64encode(message.as_string().encode()).decode())
 

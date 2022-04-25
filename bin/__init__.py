@@ -22,6 +22,7 @@ class EnsomniacMail:
         self.recipients = []
         self.bcc_recipients = []
         self.reply_to = ""
+        self.attachment_file_paths = []
 
     def verify_sender(self, sender_email):
         # The first step is to make sure that the send-from
@@ -36,6 +37,10 @@ class EnsomniacMail:
             raise Exception("The send-from e-mail address '" + sender_email + "' is not authenticated through our mail system. To authenticate, do these steps...")
 
         return sender_email
+
+    def add_attachment(self, file_path):
+        if file_path not in self.attachment_file_paths:
+            self.attachment_file_paths.append(file_path)
 
     def set_reply_to(self, email, name=""):
         self.reply_to = self.generate_recipient_str(email, name)
@@ -115,7 +120,8 @@ class EnsomniacMail:
             subject=self.subject,
             bcc_recipients=self.bcc_recipients,
             sender_name=self.sender_name,
-            reply_to=self.reply_to
+            reply_to=self.reply_to,
+            attachment_file_paths=self.attachment_file_paths
         )
 
         return {
