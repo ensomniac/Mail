@@ -16,16 +16,13 @@ class Gmail:
     def __init__(self, user):
         self.user = User(user)
 
-    def send_message(self, user_data, body_text, body_html, recipients, subject, cc_recipients=[], bcc_recipients=[], sender_name="", reply_to=""):
+    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients=[], sender_name="", reply_to=""):
         http_auth = self.get_http_auth(user_data)
         service = self.get_service(http_auth)
 
         # Creating message
         message = MIMEMultipart("alternative")
         message["to"] = ",".join(recipients)
-
-        if cc_recipients:
-            message["cc"] = ",".join(cc_recipients)
 
         if bcc_recipients:
             message["bcc"] = ",".join(bcc_recipients)

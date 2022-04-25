@@ -20,7 +20,6 @@ class EnsomniacMail:
         self.body_text = ""
         self.body = ""
         self.recipients = []
-        self.cc_recipients = []
         self.bcc_recipients = []
         self.reply_to = ""
 
@@ -66,9 +65,6 @@ class EnsomniacMail:
         # Add a recipient
         # If we pass a name, the message is composed with the proper bracket name string:
         self.recipients.append(self.generate_recipient_str(email, name))
-
-    def add_cc_recipient(self, email, name=""):
-        self.cc_recipients.append(self.generate_recipient_str(email, name))
 
     def add_bcc_recipient(self, email, name=""):
         # Add a bcc recipient
@@ -117,7 +113,6 @@ class EnsomniacMail:
             body_html=self.body_html,
             recipients=local_recipients,
             subject=self.subject,
-            cc_recipients=self.cc_recipients,
             bcc_recipients=self.bcc_recipients,
             sender_name=self.sender_name,
             reply_to=self.reply_to
