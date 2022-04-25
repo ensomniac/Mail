@@ -54,7 +54,7 @@ class Gmail:
                 message = self.add_attachment_to_message(message, file_path)
 
         # message_raw = dict(raw=urlsafe_b64encode(message.as_string().encode()).decode())
-        message_raw = urlsafe_b64encode(message.as_string())
+        message_raw = urlsafe_b64encode(message.as_string().encode())
 
         service.users().messages().send(userId="me", body=message_raw).execute()
 
