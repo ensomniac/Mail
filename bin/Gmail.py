@@ -25,7 +25,11 @@ class Gmail:
         service = self.get_service(http_auth)
 
         # Creating message
-        message = MIMEMultipart("alternative")
+        if attachment_file_paths:
+            message = MIMEMultipart()  # Text and attachments (defaults to "mixed" mode)
+        else:
+            message = MIMEMultipart("alternative")  # Text and HTML
+
         message["to"] = ",".join(recipients)
 
         if bcc_recipients:
@@ -46,12 +50,14 @@ class Gmail:
 
         message["subject"] = subject
 
-        message.attach(MIMEText(body_text, "plain"))
-        message.attach(MIMEText(body_html, "html"))
+        message.attach(MIMEText(body_text))
 
         if attachment_file_paths:
             for file_path in attachment_file_paths:
                 message = self.add_attachment_to_message(message, file_path)
+        else:
+            # HTML is only valid in this context
+            message.attach(MIMEText(body_html, "html"))
 
         message_raw = dict(raw=urlsafe_b64encode(message.as_bytes()).decode())
 
