@@ -103,6 +103,8 @@ class Gmail:
 
         attachment.add_header("Content-Disposition", "attachment", filename=basename(file_path))
 
+        # If an attachment is sent as a blank file, but the byte-size is as expected, this may solve the problem.
+        # As of writing, the only attachment type identified with this problem is PDF.
         if file_path.lower().strip().endswith(".pdf"):
             from email.encoders import encode_base64
 
