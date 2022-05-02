@@ -103,6 +103,11 @@ class Gmail:
 
         attachment.add_header("Content-Disposition", "attachment", filename=basename(file_path))
 
+        if file_path.lower().strip().endswith(".pdf"):
+            from email.encoders import encode_base64
+
+            encode_base64(attachment)
+
         message.attach(attachment)
 
         return message
