@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #
-# 2010 Ryan Martin
+# Ensomniac 2025 Ryan Martin, ryan@ensomniac.com
+#                Andrew Stet, stetandrew@gmail.com
 
 # import os
 # import datetime
@@ -18,7 +19,10 @@ class Gmail:
     def __init__(self, user):
         self.user = User(user)
 
-    def send_message(self, user_data, body_text, body_html, recipients, subject, bcc_recipients=[], sender_name="", reply_to="", attachment_file_paths=[]):
+    def send_message(
+        self, user_data, body_text, body_html, recipients, subject, bcc_recipients=[],
+        sender_name="", reply_to="", attachment_file_paths=[]
+    ):
         from base64 import urlsafe_b64encode
 
         http_auth = self.get_http_auth(user_data)

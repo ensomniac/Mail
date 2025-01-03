@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #
-# 2010 Ryan Martin
+# Ensomniac 2025 Ryan Martin, ryan@ensomniac.com
+#                Andrew Stet, stetandrew@gmail.com
 
 import os
 import json
@@ -23,7 +24,7 @@ class User:
         expected_location = self.local_storage_path + "users/" + self.email
 
         if not os.path.exists(expected_location):
-            return "Unable to locate authenticated user by e-mail address '" + self.email + "'"
+            return "Unable to locate authenticated user by email address '" + self.email + "'"
 
         else:
             os.remove(expected_location)
@@ -39,7 +40,7 @@ class User:
             if user_data:
                 return user_data
 
-            raise Exception("Unable to locate authenticated user by e-mail address '" + self.email + "' (1)")
+            raise Exception("Unable to locate authenticated user by email address '" + self.email + "' (1)")
 
         user_data = self.read_data(expected_location)
 
@@ -58,7 +59,7 @@ class User:
         expected_location = "/var/www/vhosts/oapi.co/authorize/local_storage/flow/" + self.email + "_gmail"
 
         if not os.path.exists(expected_location):
-            raise Exception("Unable to locate authenticated user by e-mail address '" + self.email + "' (2)")
+            raise Exception("Unable to locate authenticated user by email address '" + self.email + "' (2)")
 
         full_user_data = json.loads(open(expected_location, "r").read())
 

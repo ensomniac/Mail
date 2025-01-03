@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #
-# 2010 Ryan Martin
+# Ensomniac 2025 Ryan Martin, ryan@ensomniac.com
+#                Andrew Stet, stetandrew@gmail.com
 
 import os
 import cgi
@@ -109,7 +110,7 @@ class EnsomniacMailApi:
         # file_exists = os.path.exists(expected_location)
 
         if not os.path.exists(expected_location):
-            self.return_data = {"error": "Unable to locate authenticated user by e-mail address '" + email + "'"}
+            self.return_data = {"error": "Unable to locate authenticated user by email address '" + email + "'"}
             return self.return_data
 
         user_data = self.read_data(expected_location)
@@ -203,7 +204,6 @@ class EnsomniacMailApi:
                         value = datetime
                     except:
                         raise Exception("Failed to parse date " + str(value))
-                        pass
 
             elif "list" in str(type(value)):
                 value = self.iso_to_datetime(value)

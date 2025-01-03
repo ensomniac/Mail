@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #
-# 2010 Ryan Martin
+# Ensomniac 2025 Ryan Martin, ryan@ensomniac.com
+#                Andrew Stet, stetandrew@gmail.com
 
 # import os
 
@@ -26,7 +27,7 @@ class EnsomniacMail:
 
     def verify_sender(self, sender_email):
         # The first step is to make sure that the send-from
-        # e-mail is actually authenticated through our system
+        # email is actually authenticated through our system
         # Check the user data to find the user token and verify
         # the token is still good. If it's good, no need to do anything.
         # If there is a problem, raise an exception.
@@ -34,7 +35,10 @@ class EnsomniacMail:
         http_auth = self.gmail.get_http_auth(self.user.data)
 
         if not bool(http_auth):
-            raise Exception("The send-from e-mail address '" + sender_email + "' is not authenticated through our mail system. To authenticate, do these steps...")
+            raise Exception(
+                f"The send-from email address '{sender_email}' is not authenticated through "
+                f"our mail system.\n\nTo authenticate, visit:\nhttps://authorize.oapi.co/gmail"
+            )
 
         return sender_email
 
@@ -46,20 +50,20 @@ class EnsomniacMail:
         self.reply_to = self.generate_recipient_str(email, name)
 
     def set_sender_name(self, name):
-        # Sets the display name for the e-mail. First name and last name is used as a default.
+        # Sets the display name for the email. First name and last name is used as a default.
         self.sender_name = name
 
     def set_subject(self, subject):
-        # The subject of the e-mail
+        # The subject of the email
         self.subject = subject
 
     def set_body_html(self, html):
-        # The body of the e-mail, with HTML tags allowed
+        # The body of the email, with HTML tags allowed
         self.body_html = html
 
     def set_body_text(self, text):
-        # An optional text only variation of the e-mail, in case a
-        # recipient can't get HTML e-mails for some weird reason
+        # An optional text only variation of the email, in case a
+        # recipient can't get HTML emails for some weird reason
         self.body_text = text
 
     def set_body(self, body):
